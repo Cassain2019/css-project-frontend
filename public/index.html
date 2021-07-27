@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Web site created using create-react-app" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <title>Finance Portal</title>
+  <base href="/">
+  <!-- TEMPLATE CSS  -->
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+  <link href="vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/chartist/css/chartist.min.css">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body id="body">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="preloader">
+    <div class="sk-three-bounce">
+      <div class="sk-child sk-bounce1"></div>
+      <div class="sk-child sk-bounce2"></div>
+      <div class="sk-child sk-bounce3"></div>
+    </div>
+  </div>
+
+  <div id="root"></div>
+
+  <!--Scripts-->
+  <!-- Required vendors -->
+  <script src="js/jquery-3.5.0.min.js"></script>
+  <script src="vendor/global/global.min.js"></script>
+  <script src="vendor/chart.js/Chart.bundle.min.js"></script>
+  <script src="js/custom.min.js"></script>
+  <!-- Apex Chart -->
+  <script src="vendor/apexchart/apexchart.js"></script>
+
+  <!-- Vectormap -->
+  <!-- Chart piety plugin files -->
+  <script src="vendor/peity/jquery.peity.min.js"></script>
+
+  <!-- Chartist -->
+  <script src="vendor/chartist/js/chartist.min.js"></script>
+
+  <!-- Dashboard 1 -->
+  <script src="js/dashboard/dashboard-1.js"></script>
+  <!-- Svganimation scripts -->
+  <script src="vendor/svganimation/vivus.min.js"></script>
+  <script src="js/plugins-init/summernote-init.js"></script>
+  <script src="vendor/svganimation/svg.animation.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      $(".nav-control").on('click', function () {
+        $('#main-wrapper').toggleClass("menu-toggle");
+
+        $(".hamburger").toggleClass("is-active");
+      });
+
+      $('.right-sidebar .nav-link').on('click', function () {
+        $('.chatSiteBar').addClass('active');
+      });
+      $('.chatbox-close').on('click', function () {
+        $('.chatSiteBar').removeClass('active');
+      });
+      var direction = getUrlParams('dir');
+      if (direction != 'rtl') { direction = 'ltr'; }
+
+      new dezSettings({
+        typography: "roboto",
+        version: "light",
+        layout: "vertical",
+        headerBg: "color_1",
+        navheaderBg: "color_3",
+        sidebarBg: "color_1",
+        sidebarStyle: "mini",
+        sidebarPosition: "fixed",
+        headerPosition: "fixed",
+        containerLayout: "wide",
+        direction: direction
+      });
+    });
+  </script>
+</body>
+
+</html>
