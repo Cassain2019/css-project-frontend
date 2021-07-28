@@ -51,6 +51,12 @@ var TransactionSchema = new mongoose.Schema(
       unique: false,
       default: "",
     },
+    otherTax: {
+      type: Array,
+      required: false,
+      unique: false,
+      default: "",
+    },
     remarks: {
       type: String,
       required: true,
@@ -58,6 +64,12 @@ var TransactionSchema = new mongoose.Schema(
       default: "",
     },
     invtotal: {
+      type: Number,
+      required: true,
+      unique: false,
+      default: "",
+    },
+    taxTotal: {
       type: Number,
       required: true,
       unique: false,
@@ -88,6 +100,24 @@ var TransactionSchema = new mongoose.Schema(
       default: "",
     },
     recevied: {
+      type: Array,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    taxes: {
+      type: Array,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    taxAmounts: {
+      type: Array,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    discount: {
       type: Array,
       required: false,
       unique: false,

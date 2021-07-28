@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import $ from "jquery";
 
+
 // Modals
 import MainCategory from "../component/mainCategory";
 import SubCategory from "../component/subcategory";
@@ -13,13 +14,7 @@ export default function View() {
   const [dealers, setDealers] = new useState([]);
   const location = useLocation();
   useEffect(() => {
-    axios
-      .get(
-        `https://css-project.herokuapp.com/dealers/${location.pathname.replace(
-          "/",
-          ""
-        )}/company/` + localStorage.getItem("company_id")
-      )
+    axios.get(`http://localhost:4000/dealers/${location.pathname.replace("/", "")}/company/` + localStorage.getItem("company_id"))
       .then((res) => setDealers(res.data))
       .catch((err) => console.log("Error: " + err));
   }, [location.pathname, setDealers]);
@@ -27,9 +22,7 @@ export default function View() {
   const filter = (e) => {
     let value = e.target.value;
     $("#dealers tr").filter(function () {
-      $(this).toggle(
-        $(this).text().toLowerCase().indexOf(value.toLowerCase()) > -1
-      );
+      $(this).toggle($(this).text().toLowerCase().indexOf(value.toLowerCase()) > -1);
       return null;
     });
   };
@@ -104,9 +97,7 @@ export default function View() {
                                   width="24"
                                   alt=""
                                 />
-                                <span className="w-space-no">
-                                  {element.name}
-                                </span>
+                                <span className="w-space-no">{element.name}</span>
                               </div>
                             </td>
                             <td>

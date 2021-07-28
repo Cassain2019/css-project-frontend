@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import $ from "jquery";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 import { Link } from "react-router-dom";
 
 function InvoiceView() {
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
   const [quotation, setQuotation] = new useState({
     company: { currSymbol: "" },
     creator: localStorage.getItem("user_id"),
@@ -34,16 +34,13 @@ function InvoiceView() {
     async function Requests() {
       // PRODUCT
       await axios
-        .get(
-          "https://css-project.herokuapp.com/products/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/products/company/" + localStorage.getItem("company_id"))
         .then((res) => setProduct(res.data))
         .catch((err) => console.log("Error: " + err));
 
       //Quotation DATA
       await axios
-        .get(`https://css-project.herokuapp.com/quotations/specific/` + id)
+        .get(`http://localhost:4000/quotations/specific/` + id)
         .then((res) => {
           if (res.data !== "error") {
             setQuotation(res.data);
@@ -70,13 +67,8 @@ function InvoiceView() {
       total += totl;
     }
     setTotals({
-      total:
-        quotation.transaction === "Yes"
-          ? total.toFixed(2)
-          : subtotal.toFixed(2),
-      subTotal: subtotal.toFixed(2),
-      tax:
-        quotation.transaction === "Yes" ? (total - subtotal).toFixed(2) : 0.0,
+      total: quotation.transaction === "Yes" ? total.toFixed(2) : subtotal.toFixed(2), subTotal: subtotal.toFixed(2),
+      tax: quotation.transaction === "Yes" ? (total - subtotal).toFixed(2) : 0.0,
     });
   }, [quotation.products, quotation.transaction]);
   return (
@@ -89,17 +81,12 @@ function InvoiceView() {
               <div className="card-body">
                 <div className="p-1 d-flex bd-highlight">
                   <div className="flex-grow-1 text-left bd-highlight">
-                    <img
-                      className="img-fluid rounded border"
-                      alt="A generic square placeholder with rounded corners in a figure."
-                      src={quotation.company.logo}
-                      style={{ height: "110px" }}
-                    />
+                    <img className="img-fluid rounded border" alt="A generic square placeholder with rounded corners in a figure." src={quotation.company.logo} style={{ height: "110px" }} />
                     <h4 style={{ fontSize: "20px" }} className="mt-3">
                       {quotation.company.name}
                     </h4>
                     <span style={{ fontSize: "15px" }}>
-                      NTN No: {quotation.company.ntn} | GST No:{" "}
+                      NTN No: {quotation.company.ntn} | GST No: {" "}
                       {quotation.company.strn}
                     </span>
                     <br />
@@ -144,26 +131,10 @@ function InvoiceView() {
                       </span>
                     </p>
                     <ul class="social-icons icon-circle list-unstyled list-inline">
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-facebook"></i>
-                        </Link>{" "}
-                      </li>
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-twitter"></i>
-                        </Link>{" "}
-                      </li>
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-linkedin"></i>
-                        </Link>{" "}
-                      </li>
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-instagram"></i>
-                        </Link>{" "}
-                      </li>
+                      <li><Link to="/"><i class="fa fa-facebook"></i></Link> </li>
+                      <li><Link to="/"><i class="fa fa-twitter"></i></Link> </li>
+                      <li><Link to="/"><i class="fa fa-linkedin"></i></Link> </li>
+                      <li><Link to="/"><i class="fa fa-instagram"></i></Link> </li>
                     </ul>
                   </div>
                 </div>
@@ -192,6 +163,7 @@ function InvoiceView() {
                     <strong
                       style={{ fontSize: "22px", textAlign: "right" }}
                       className="text-primary"
+
                     >
                       Invoice Details
                     </strong>
@@ -209,10 +181,9 @@ function InvoiceView() {
                     fontSize: "22px",
                     fontFamily: "calibri",
                     height: "38px",
-                    background:
-                      "linear-gradient(-50deg, #00c6ff 0%, #0072ff  100%, #00c6ff  100%)",
+                    background: 'linear-gradient(-50deg, #00c6ff 0%, #0072ff  100%, #00c6ff  100%)',
                     color: "#fff",
-                    textAlign: "center",
+                    textAlign: "center"
                   }}
                   className="col-12 text-center mb-4 border"
                 >
@@ -231,53 +202,28 @@ function InvoiceView() {
                           <>
                             <th>Tax</th>
                             <th>Amount</th>
-                          </>
-                        ) : (
-                          ""
-                        )}
+                          </>) : ""}
                         <th>Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {quotation.products.map((e, index) => {
-                        let product = products.filter(
-                          (arr) => arr._id === e.name
-                        );
+                        let product = products.filter((arr) => arr._id === e.name);
                         let amount = parseFloat(e.rate) * parseFloat(e.qty);
-                        let total =
-                          quotation.transaction === "Yes"
-                            ? amount *
-                                (parseInt(product[0].tax.percentage) / 100) +
-                              amount
-                            : amount;
+                        let total = quotation.transaction === "Yes" ? amount * (parseInt(product[0].tax.percentage) / 100) + amount : amount;
                         return (
                           <tr>
                             <td>{index + 1}</td>
                             <td>{product[0].name}</td>
                             <td>{product[0].unit.unit}</td>
-                            <td>
-                              {parseFloat(e.rate).toFixed(2)}{" "}
-                              {quotation.company.currSymbol}
-                            </td>
+                            <td>{parseFloat(e.rate).toFixed(2)} {quotation.company.currSymbol}</td>
                             <td>{e.qty}</td>
                             {quotation.transaction === "Yes" ? (
                               <>
-                                <td>
-                                  {product[0].tax.percentage}% |{" "}
-                                  {(total - amount).toFixed(2)}{" "}
-                                  {quotation.company.currSymbol}
-                                </td>
-                                <td>
-                                  {amount.toFixed(2)}{" "}
-                                  {quotation.company.currSymbol}
-                                </td>
-                              </>
-                            ) : (
-                              ""
-                            )}
-                            <td>
-                              {total.toFixed(2)} {quotation.company.currSymbol}
-                            </td>
+                                <td>{product[0].tax.percentage}% | {(total - amount).toFixed(2)} {quotation.company.currSymbol}</td>
+                                <td>{amount.toFixed(2)} {quotation.company.currSymbol}</td>
+                              </>) : ""}
+                            <td>{total.toFixed(2)} {quotation.company.currSymbol}</td>
                           </tr>
                         );
                       })}
@@ -291,8 +237,7 @@ function InvoiceView() {
                       style={{
                         fontSize: "16px",
                         fontFamily: "calibri",
-                        background:
-                          "linear-gradient(-50deg, #00c6ff 0%, #0072ff  100%, #00c6ff  100%)",
+                        background: 'linear-gradient(-50deg, #00c6ff 0%, #0072ff  100%, #00c6ff  100%)',
                       }}
                     >
                       Terms And Conditions
@@ -311,26 +256,20 @@ function InvoiceView() {
                     <dl className="receipt__list">
                       <div className="receipt__list-row">
                         <dt className="receipt__item">Sub Total</dt>
-                        <dd className="receipt__cost">
-                          {quotation.company.currSymbol} {totals.subTotal}
-                        </dd>
+                        <dd className="receipt__cost">{quotation.company.currSymbol} {totals.subTotal}</dd>
                       </div>
                       <div className="receipt__list-row mt-3">
                         <dt className="receipt__item">Total Tax</dt>
-                        <dd className="receipt__cost">
-                          {quotation.company.currSymbol} {totals.tax}
-                        </dd>
+                        <dd className="receipt__cost">{quotation.company.currSymbol} {totals.tax}</dd>
                       </div>
                       <div className="receipt__list-row receipt__list-row--total mt-3">
                         <dt className="receipt__item">Grand Total</dt>
-                        <dd className="receipt__cost">
-                          {quotation.company.currSymbol} {totals.total}
-                        </dd>
+                        <dd className="receipt__cost">{quotation.company.currSymbol} {totals.total}</dd>
                       </div>
                     </dl>
                   </div>
                   <div className="col-md-12">
-                    <h6 style={{ color: "#89879F" }}>INOVICE CREATOR</h6>
+                    <h6 style={{ color: '#89879F' }}>INOVICE CREATOR</h6>
                     <p
                       style={{
                         fontSize: "15px",
@@ -338,22 +277,12 @@ function InvoiceView() {
                       }}
                       className="text-left"
                     >
-                      <i className="fa fa-user mr-2" aria-hidden="true"></i>{" "}
-                      {quotation.creator.firstName} {quotation.creator.lastName}
+                      <i className="fa fa-user mr-2" aria-hidden="true"></i> {quotation.creator.firstName} {quotation.creator.lastName}
                       <br />
-                      <i
-                        className="fa fa-envelope mr-2"
-                        aria-hidden="true"
-                      ></i>{" "}
-                      {quotation.creator.email}
+                      <i className="fa fa-envelope mr-2" aria-hidden="true"></i> {quotation.creator.email}
                       <br />
-                      <i
-                        className="fa fa-phone mr-2"
-                        aria-hidden="true"
-                      ></i>{" "}
-                      {quotation.creator.contact}
-                    </p>
-                  </div>
+                      <i className="fa fa-phone mr-2" aria-hidden="true"></i> {quotation.creator.contact}
+                    </p></div>
                 </div>
                 <div
                   className="col-12 text-center mt-4"
@@ -364,7 +293,8 @@ function InvoiceView() {
                     position: "bottom",
                     clear: "both",
                   }}
-                ></div>
+                >
+                </div>
               </div>
             </div>
           </div>
@@ -376,8 +306,8 @@ function InvoiceView() {
                   className="btn-grad btn-grad-primary"
                   onClick={(e) => {
                     e.preventDefault();
-                    let printContents = $(".Invoice").html();
-                    $("body").css("background-color", "white");
+                    let printContents = $('.Invoice').html();
+                    $('body').css("background-color", 'white');
                     document.body.innerHTML = printContents;
                     window.print();
                     window.location.reload();
@@ -401,21 +331,15 @@ function InvoiceView() {
                       onClick={(e) => {
                         e.preventDefault();
                         axios
-                          .post(
-                            `https://css-project.herokuapp.com/quotations/${id}`,
-                            {
-                              status: "Approved",
-                              approvedBy: localStorage.getItem("user_id"),
-                            }
-                          )
+                          .post(`http://localhost:4000/quotations/${id}`, {
+                            status: "Approved",
+                            approvedBy: localStorage.getItem("user_id"),
+                          })
                           .then((res) => {
                             toast.success("Invoice Approved", toastFields);
                             setQuotation({ ...quotation, status: "Approved" });
                           })
-                          .catch((err) => {
-                            toast.dismiss();
-                            toast.error("Server Error", toastFields);
-                          });
+                          .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
                       }}
                     >
                       <i className="fa fa-check-circle mr-1"></i> APPROVE

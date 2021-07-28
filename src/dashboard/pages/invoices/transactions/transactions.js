@@ -5,7 +5,7 @@ import $ from "jquery";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 
 function InvoiceView() {
   const [transaction, setTransaction] = new useState({
@@ -38,23 +38,20 @@ function InvoiceView() {
   let { id } = new useParams();
   let history = useHistory();
   const FormData = require("form-data");
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
 
   useEffect(() => {
     require("../css/main.css");
     async function Requests() {
       // PRODUCT
       await axios
-        .get(
-          "https://css-project.herokuapp.com/products/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/products/company/" + localStorage.getItem("company_id"))
         .then((res) => setProduct(res.data))
         .catch((err) => console.log("Error: " + err));
 
       //Transaction DATA
       await axios
-        .get(`https://css-project.herokuapp.com/transactions/specific/` + id)
+        .get(`http://localhost:4000/transactions/specific/` + id)
         .then((res) => {
           if (res.data !== "error") {
             setTransaction(res.data);
@@ -94,7 +91,7 @@ function InvoiceView() {
   // FUNCTIONS
   const refresh = () => {
     axios
-      .get(`https://css-project.herokuapp.com/transactions/specific/` + id)
+      .get(`http://localhost:4000/transactions/specific/` + id)
       .then((res) => {
         if (res.data !== "error") {
           setTransaction(res.data);
@@ -114,12 +111,7 @@ function InvoiceView() {
               <div className="card-body Invoice">
                 <div className="p-1 d-flex bd-highlight">
                   <div className="flex-grow-1 text-left bd-highlight">
-                    <img
-                      className="img-fluid rounded border"
-                      alt="A generic square placeholder with rounded corners in a figure."
-                      src={transaction.company.logo}
-                      style={{ height: "110px" }}
-                    />
+                    <img className="img-fluid rounded border" alt="A generic square placeholder with rounded corners in a figure." src={transaction.company.logo} style={{ height: "110px" }} />
                     <h4 style={{ fontSize: "20px" }} className="mt-3">
                       {transaction.company.name}
                     </h4>
@@ -161,26 +153,10 @@ function InvoiceView() {
                       </span>
                     </p>
                     <ul class="social-icons icon-circle list-unstyled list-inline">
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-facebook"></i>
-                        </Link>{" "}
-                      </li>
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-twitter"></i>
-                        </Link>{" "}
-                      </li>
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-linkedin"></i>
-                        </Link>{" "}
-                      </li>
-                      <li>
-                        <Link to="/">
-                          <i class="fa fa-instagram"></i>
-                        </Link>{" "}
-                      </li>
+                      <li><Link to="/"><i class="fa fa-facebook"></i></Link> </li>
+                      <li><Link to="/"><i class="fa fa-twitter"></i></Link> </li>
+                      <li><Link to="/"><i class="fa fa-linkedin"></i></Link> </li>
+                      <li><Link to="/"><i class="fa fa-instagram"></i></Link> </li>
                     </ul>
                   </div>
                 </div>
@@ -247,25 +223,15 @@ function InvoiceView() {
                           <>
                             <th>Tax</th>
                             <th>Amount</th>
-                          </>
-                        ) : (
-                          ""
-                        )}
+                          </>) : ""}
                         <th>Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {transaction.products.map((e, index) => {
-                        let product = products.filter(
-                          (arr) => arr._id === e.name
-                        );
+                        let product = products.filter((arr) => arr._id === e.name);
                         let amount = parseFloat(e.rate) * parseFloat(e.qty);
-                        let total =
-                          transaction.transaction === "Yes"
-                            ? amount *
-                                (parseInt(product[0].tax.percentage) / 100) +
-                              amount
-                            : amount;
+                        let total = transaction.transaction === "Yes" ? amount * (parseInt(product[0].tax.percentage) / 100) + amount : amount;
 
                         return (
                           <tr style={{ border: "1px #e6e6e6" }}>
@@ -276,19 +242,9 @@ function InvoiceView() {
                             <td>{e.qty}</td>
                             {transaction.transaction === "Yes" ? (
                               <>
-                                <td>
-                                  {product[0].tax.percentage}% |{" "}
-                                  {(total - amount).toFixed(2)}{" "}
-                                  {transaction.company.currSymbol}
-                                </td>
-                                <td>
-                                  {amount.toFixed(2)}{" "}
-                                  {transaction.company.currSymbol}
-                                </td>
-                              </>
-                            ) : (
-                              ""
-                            )}
+                                <td>{product[0].tax.percentage}% | {(total - amount).toFixed(2)} {transaction.company.currSymbol}</td>
+                                <td>{amount.toFixed(2)} {transaction.company.currSymbol}</td>
+                              </>) : ""}
                             <td>{total.toFixed(2)} </td>
                           </tr>
                         );
@@ -323,21 +279,15 @@ function InvoiceView() {
                     <dl className="receipt__list">
                       <div className="receipt__list-row">
                         <dt className="receipt__item">Sub Total</dt>
-                        <dd className="receipt__cost">
-                          {transaction.company.currSymbol} {totals.subTotal}
-                        </dd>
+                        <dd className="receipt__cost">{transaction.company.currSymbol} {totals.subTotal}</dd>
                       </div>
                       <div className="receipt__list-row mt-3">
                         <dt className="receipt__item">Total Tax</dt>
-                        <dd className="receipt__cost">
-                          {transaction.company.currSymbol} {totals.tax}
-                        </dd>
+                        <dd className="receipt__cost">{transaction.company.currSymbol} {totals.tax}</dd>
                       </div>
                       <div className="receipt__list-row receipt__list-row--total mt-3">
                         <dt className="receipt__item">Grand Total</dt>
-                        <dd className="receipt__cost">
-                          {transaction.company.currSymbol} {totals.total}
-                        </dd>
+                        <dd className="receipt__cost">{transaction.company.currSymbol} {totals.total}</dd>
                       </div>
                     </dl>
                   </div>
@@ -378,8 +328,8 @@ function InvoiceView() {
                 <button
                   className="btn btn-block btn-primary"
                   onClick={(e) => {
-                    let printContents = $(".Invoice").html();
-                    $("body").css("background-color", "white");
+                    let printContents = $('.Invoice').html();
+                    $('body').css("background-color", 'white');
                     document.body.innerHTML = printContents;
                     window.print();
                     window.location.reload();
@@ -405,9 +355,7 @@ function InvoiceView() {
                         toast.loading("Loading...");
                         for (let i = 0; i < transaction.products.length; i++) {
                           // GETTING PRODUCT
-                          let product = products.filter(
-                            (arr) => arr._id === transaction.products[i].name
-                          );
+                          let product = products.filter((arr) => arr._id === transaction.products[i].name);
                           // ALTERING QTY
                           product[0].current_stock =
                             parseInt(product[0].current_stock) -
@@ -415,57 +363,32 @@ function InvoiceView() {
 
                           // FORM DATA
                           var form = new FormData();
-                          form.append(
-                            "current_stock",
-                            product[0].current_stock
-                          );
+                          form.append("current_stock", product[0].current_stock);
 
                           //REQUESTING FOR UPDATE
-                          await axios
-                            .post(
-                              `https://css-project.herokuapp.com/products/` +
-                                product[0]._id,
-                              form
-                            )
-                            .then((res) => {
-                              if (res.data !== "Updated") {
-                                setCheck(false);
-                              }
-                            })
-                            .catch(() => {
-                              toast.dismiss();
-                              toast.error("Server Error", toastFields);
-                            });
+                          await axios.post(`http://localhost:4000/products/` + product[0]._id, form)
+                            .then((res) => { if (res.data !== "Updated") { setCheck(false); } })
+                            .catch(() => { toast.dismiss(); toast.error("Server Error", toastFields) });
 
                           // BREAKING THE LOOP
-                          if (check === false) {
-                            break;
-                          }
+                          if (check === false) { break; }
                         }
                         if (check === true) {
                           axios
-                            .post(
-                              `https://css-project.herokuapp.com/transactions/${id}`,
-                              {
-                                status: "Approved",
-                                approvedBy: localStorage.getItem("user_id"),
-                              }
-                            )
+                            .post(`http://localhost:4000/transactions/${id}`, {
+                              status: "Approved",
+                              approvedBy: localStorage.getItem("user_id"),
+                            })
                             .then((res) => {
                               toast.dismiss();
-                              toast.success(
-                                `Transaction Approved`,
-                                toastFields
-                              );
+                              toast.success(`Transaction Approved`, toastFields);
                               refresh();
                             })
-                            .catch((err) => {
-                              toast.dismiss();
-                              toast.error("Server Error", toastFields);
-                            });
+                            .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) }
+                            );
                         } else {
                           toast.dismiss();
-                          toast.error("Product Qty Error", toastFields);
+                          toast.error("Product Qty Error", toastFields)
                         }
                       }}
                     >

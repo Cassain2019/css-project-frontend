@@ -1,13 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
+
 
 function Unit() {
   const [data, setData] = new useState({
     company: [localStorage.getItem("company_id")],
     unit: "",
   });
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
   const onChange = (e) => {
     setData({
       ...data,
@@ -18,7 +19,7 @@ function Unit() {
     e.preventDefault();
     if (!Object.values(data).every((element) => element !== "") === false) {
       axios
-        .post("https://css-project.herokuapp.com/units/", data)
+        .post("http://localhost:4000/units/", data)
         .then((res) => {
           toast.dismiss();
           if (res.data === "Added") {
@@ -31,10 +32,7 @@ function Unit() {
             toast.error("Unit Already Exists", toastFields);
           }
         })
-        .catch(() => {
-          toast.dismiss();
-          toast.error("Server Error", toastFields);
-        });
+        .catch(() => { toast.dismiss(); toast.error("Server Error", toastFields) });
     } else {
       toast.dismiss();
       toast.error("Missing Fields", toastFields);
@@ -42,6 +40,7 @@ function Unit() {
   };
   return (
     <div className="modal fade" id="unitModal">
+
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -67,11 +66,7 @@ function Unit() {
             </div>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={onSubmit}
-            >
+            <button type="button" className="btn btn-primary" onClick={onSubmit}>
               Create Unit
             </button>
           </div>

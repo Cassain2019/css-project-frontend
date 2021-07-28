@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 import $ from "jquery";
 
 import ReactTooltip from "react-tooltip";
@@ -20,7 +20,7 @@ function Transaction() {
   const [tax, setTax] = new useState([]);
   const [company, setCompany] = new useState({
     currSymbol: "",
-    invoiceTaxes: [],
+    invoiceTaxes: []
   });
   const [value, setValue] = new useState({
     id: "none",
@@ -37,7 +37,7 @@ function Transaction() {
     total: 0.0,
     subTotal: 0.0,
     tax: 0.0,
-    othertaxes: 0.0,
+    othertaxes: 0.0
   });
   const [data, setData] = new useState({
     company: localStorage.getItem("company_id"),
@@ -70,7 +70,7 @@ function Transaction() {
     paymentDetails: [],
     paymentDate: [],
   });
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
 
   // ON LOAD ACTIVITIES
 
@@ -83,37 +83,25 @@ function Transaction() {
     async function Requests() {
       // Taxes
       await axios
-        .get(
-          "https://css-project.herokuapp.com/taxes/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/taxes/company/" + localStorage.getItem("company_id"))
         .then((res) => setTax(res.data))
         .catch((err) => console.log("Error: " + err));
 
       //COMPANY
       await axios
-        .get(
-          "https://css-project.herokuapp.com/companies/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
         .then((res) => setCompany(res.data))
         .catch((err) => console.log("Error: " + err));
 
       // PRODUCT
       await axios
-        .get(
-          "https://css-project.herokuapp.com/products/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/products/company/" + localStorage.getItem("company_id"))
         .then((res) => setProduct(res.data))
         .catch((err) => console.log("Error: " + err));
 
       //dealers
       await axios
-        .get(
-          `https://css-project.herokuapp.com/dealers/company/` +
-            localStorage.getItem("company_id")
-        )
+        .get(`http://localhost:4000/dealers/company/` + localStorage.getItem("company_id"))
         .then((res) => {
           setCustomers(res.data.filter((arr) => arr.type === "customer"));
           setSuppliers(res.data.filter((arr) => arr.type === "supplier"));
@@ -123,7 +111,7 @@ function Transaction() {
       if (id) {
         //Transaction DATA
         await axios
-          .get(`https://css-project.herokuapp.com/transactions/specific/` + id)
+          .get(`http://localhost:4000/transactions/specific/` + id)
           .then((res) => {
             if (res.data !== "error") {
               setData(res.data);
@@ -136,9 +124,7 @@ function Transaction() {
       } else if (invoice) {
         //Quotation DATA
         axios
-          .get(
-            `https://css-project.herokuapp.com/quotations/specific/` + invoice
-          )
+          .get(`http://localhost:4000/quotations/specific/` + invoice)
           .then((res) => {
             if (res.data !== "error") {
               setData({
@@ -157,9 +143,7 @@ function Transaction() {
           .catch((err) => console.log("Error: " + err));
       } else if (sale_id) {
         await axios
-          .get(
-            `https://css-project.herokuapp.com/transactions/specific/` + sale_id
-          )
+          .get(`http://localhost:4000/transactions/specific/` + sale_id)
           .then((res) => {
             if (res.data !== "error") {
               setData(res.data);
@@ -174,12 +158,12 @@ function Transaction() {
     Requests();
   }, []);
 
-  // FOR INVOICE NO
+  // FOR INVOICE NO 
   useEffect(() => {
     if (!id) {
       // Invoice
       axios
-        .get("https://css-project.herokuapp.com/transactions/invoice/" + type)
+        .get("http://localhost:4000/transactions/invoice/" + type)
         .then((res) => invoiceGen(res.data))
         .catch((err) => console.log("Error: " + err));
     }
@@ -192,26 +176,21 @@ function Transaction() {
     let otherTax = 0;
     for (let i = 0; i < data.products.length; i++) {
       let product = products.filter((arr) => arr._id === data.products[i].name);
-      let amount =
-        parseFloat(data.products[i].rate) * parseInt(data.products[i].qty);
+      let amount = parseFloat(data.products[i].rate) * parseInt(data.products[i].qty);
       let totl = amount * (parseInt(product[0].tax.percentage) / 100) + amount;
       subtotal += amount;
       total += totl;
     }
     for (let i = 0; i < company.invoiceTaxes.length; i++) {
-      let invoiceTax = tax.filter(
-        (arr) => arr._id === company.invoiceTaxes[i].value
-      );
+      let invoiceTax = tax.filter((arr) => arr._id === company.invoiceTaxes[i].value);
       otherTax += subtotal * (parseFloat(invoiceTax[0].percentage) / 100);
     }
     setTotals({
       total:
-        data.transaction === "Yes"
-          ? (total + otherTax).toFixed(2)
-          : (subtotal + otherTax).toFixed(2),
+        data.transaction === "Yes" ? (total + otherTax).toFixed(2) : (subtotal + otherTax).toFixed(2),
       subTotal: subtotal.toFixed(2),
       tax: data.transaction === "Yes" ? (total - subtotal).toFixed(2) : 0.0,
-      othertaxes: otherTax.toFixed(2),
+      othertaxes: (otherTax).toFixed(2)
     });
     setData({ ...data, status: "In Progress", type: type });
   }, [data.products, data.transaction, value, data.otherTax]);
@@ -219,36 +198,25 @@ function Transaction() {
   // FOR HISTORY ONLY
   useEffect(async () => {
     for (let i = 0; i < data.products.length; i++) {
-      await axios
-        .get(
-          "https://css-project.herokuapp.com/transactions/latest/" +
-            data.products[i].name
-        )
+      await axios.get("http://localhost:4000/transactions/latest/" + data.products[i].name)
         .then((res, product = data.products[i].name, itreation = i) => {
           for (let i = 0; i < res.data.length; i++) {
-            let rate = res.data[i].products.filter(
-              (arr) => arr.name === product
-            )[0].rate;
-            res.data[i].type === "sale"
-              ? $("#Hsale-" + itreation).html(parseFloat(rate).toFixed(2))
-              : $("#Hpurchase-" + itreation).html(parseFloat(rate).toFixed(2));
+            let rate = res.data[i].products.filter((arr) => arr.name === product)[0].rate;
+            res.data[i].type === "sale" ?
+              $("#Hsale-" + itreation).html(parseFloat(rate).toFixed(2)) :
+              $("#Hpurchase-" + itreation).html(parseFloat(rate).toFixed(2))
           }
         })
         .catch((err) => console.log(err));
     }
-  }, [data.products]);
+  }, [data.products])
 
   // FOR TOTAL TAXES AND AMOUNT
   useEffect(() => {
-    setData({
-      ...data,
-      invtotal: totals.total,
-      taxTotal: totals.othertaxes,
-      otherTax: company.invoiceTaxes,
-    });
+    setData({ ...data, invtotal: totals.total, taxTotal: totals.othertaxes, otherTax: company.invoiceTaxes });
   }, [totals.total]);
 
-  // FOR CUSTOMER CHANGE
+  // FOR CUSTOMER CHANGE 
   useEffect(() => {
     let tmpDealer = customers.filter((element) => element._id === prop.dealer);
     if (tmpDealer.length > 0) {
@@ -259,12 +227,7 @@ function Transaction() {
         term = term.replace("Days Terms", "");
         let tempDate = new Date();
         tempDate.setDate(tempDate.getDate() + parseInt(term));
-        let dueDate =
-          tempDate.getFullYear() +
-          "-" +
-          String(tempDate.getMonth() + 1).padStart(2, "0") +
-          "-" +
-          String(tempDate.getDate()).padStart(2, "0");
+        let dueDate = tempDate.getFullYear() + "-" + String(tempDate.getMonth() + 1).padStart(2, "0") + "-" + String(tempDate.getDate()).padStart(2, "0");
         setData({ ...data, dueDate: dueDate });
       }
     }
@@ -299,10 +262,7 @@ function Transaction() {
     } else {
       //COMPANY
       await axios
-        .get(
-          "https://css-project.herokuapp.com/companies/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
         .then((res) => {
           let year =
             res.data.FormatDetails === true
@@ -348,10 +308,10 @@ function Transaction() {
       type === "purchase"
         ? !Object.values(value).every((element) => element !== "") === false
         : value.dealer === "" &&
-          value.product !== "" &&
-          value.displayName !== "" &&
-          value.rate !== "" &&
-          value.qty !== ""
+        value.product !== "" &&
+        value.displayName !== "" &&
+        value.rate !== "" &&
+        value.qty !== ""
     ) {
       if (value.id === "none") {
         setData({
@@ -410,22 +370,16 @@ function Transaction() {
     $("#btnContent").html(
       '<i className="fa fa-spinner fa-spin" aria-hidden="true"></i>'
     );
-    let url = "https://css-project.herokuapp.com/transactions/";
+    let url = "http://localhost:4000/transactions/";
     if (id) {
-      url = "https://css-project.herokuapp.com/transactions/" + id;
+      url = "http://localhost:4000/transactions/" + id;
     }
     setData({ ...data, status: "In Progress", type: type });
     if (!Object.values(data).every((element) => element !== "") === false) {
       let restriction = true;
       data.products.forEach((e) => {
         if (type !== "purchase") {
-          if (
-            value.dealer === "" &&
-            value.product !== "" &&
-            value.displayName !== "" &&
-            value.rate !== "" &&
-            value.qty !== ""
-          ) {
+          if (value.dealer === "" && value.product !== "" && value.displayName !== "" && value.rate !== "" && value.qty !== "") {
             restriction = false;
           }
         } else {
@@ -441,10 +395,7 @@ function Transaction() {
           .then((res) => {
             toast.dismiss();
             if (res.data === "Added" || res.data === "Updated") {
-              toast.success(
-                `${id ? "Updated" : "Created"} Transaction`,
-                toastFields
-              );
+              toast.success(`${id ? "Updated" : "Created"} Transaction`, toastFields);
               if (sale_id) {
                 history.push("/purchase");
               }
@@ -485,16 +436,10 @@ function Transaction() {
                 $("#address").val("");
               }
             } else {
-              toast.error(
-                "Please Contact us If You See This Again",
-                toastFields
-              );
+              toast.error("Please Contact us If You See This Again", toastFields);
             }
           })
-          .catch((err) => {
-            toast.dismiss();
-            toast.error("Server Error", toastFields);
-          });
+          .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
       } else {
         toast.dismiss();
         toast.error("Missing Fields", toastFields);
@@ -581,10 +526,10 @@ function Transaction() {
                       id && invoice
                         ? data.dealer.phone
                         : customers.map((element, index) => {
-                            if (element._id === prop.dealer) {
-                              return element.phone;
-                            }
-                          })[0]
+                          if (element._id === prop.dealer) {
+                            return element.phone;
+                          }
+                        })[0]
                     }
                     className="form-control"
                     readOnly
@@ -611,10 +556,10 @@ function Transaction() {
                       id && invoice
                         ? data.dealer.address
                         : customers.map((element, index) => {
-                            if (element._id === data.dealer) {
-                              return element.address;
-                            }
-                          })[0]
+                          if (element._id === data.dealer) {
+                            return element.address;
+                          }
+                        })[0]
                     }
                     className="form-control"
                     readOnly
@@ -668,17 +613,10 @@ function Transaction() {
                       </thead>
                       <tbody>
                         {data.products.map((e, index) => {
-                          let product = products.filter(
-                            (arr) => arr._id === e.name
-                          );
-                          let supplier = suppliers.filter(
-                            (arr) => arr._id === e.dealer
-                          );
+                          let product = products.filter((arr) => arr._id === e.name);
+                          let supplier = suppliers.filter((arr) => arr._id === e.dealer);
                           let amount = parseFloat(e.rate) * parseFloat(e.qty);
-                          let total =
-                            amount *
-                              (parseInt(product[0].tax.percentage) / 100) +
-                            amount;
+                          let total = amount * (parseInt(product[0].tax.percentage) / 100) + amount;
                           return (
                             <>
                               <ReactTooltip
@@ -741,29 +679,11 @@ function Transaction() {
                                 <td>{e.qty}</td>
                                 <td>{product[0].tax.percentage}%</td>
                                 <td>
-                                  <span
-                                    data-tip
-                                    data-for="purchaseTip"
-                                    id={`Hpurchase-${index}`}
-                                  >
-                                    0.00
-                                  </span>{" "}
+                                  <span data-tip data-for="purchaseTip" id={`Hpurchase-${index}`}>0.00</span>{" "}
                                   |{" "}
-                                  <span
-                                    data-tip
-                                    data-for="saleTip"
-                                    id={`Hsale-${index}`}
-                                  >
-                                    0.00
-                                  </span>{" "}
+                                  <span data-tip data-for="saleTip" id={`Hsale-${index}`}>0.00</span>{" "}
                                   |{" "}
-                                  <span
-                                    data-tip
-                                    data-for="soldCusTip"
-                                    id="soldCusTip"
-                                  >
-                                    0.00
-                                  </span>{" "}
+                                  <span data-tip data-for="soldCusTip" id="soldCusTip">0.00</span>{" "}
                                 </td>
                                 <td>
                                   <span data-tip data-for="amountTip">
@@ -815,9 +735,7 @@ function Transaction() {
                                     aria-hidden="true"
                                     onClick={(event) => {
                                       event.preventDefault();
-                                      let rows = data.products.filter(
-                                        (item) => item.id !== e.id
-                                      );
+                                      let rows = data.products.filter((item) => item.id !== e.id);
                                       setData({
                                         ...data,
                                         products: rows,
@@ -1023,27 +941,19 @@ function Transaction() {
                     <dl className="receipt__list">
                       <div className="receipt__list-row mt-4">
                         <dt className="receipt__item">Sub Total</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.subTotal}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.subTotal}</dd>
                       </div>
                       <div className="receipt__list-row mt-3">
                         <dt className="receipt__item">Product Tax</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.tax}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.tax}</dd>
                       </div>
                       <div className="receipt__list-row mt-3">
                         <dt className="receipt__item">Special Tax</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.othertaxes}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.othertaxes}</dd>
                       </div>
                       <div className="receipt__list-row receipt__list-row--total mt-3 ">
                         <dt className="receipt__item">Total</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.total}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.total}</dd>
                       </div>
                     </dl>
                   </div>
@@ -1133,10 +1043,7 @@ function Transaction() {
                                   .indexOf(arr[i].toLowerCase()) > -1
                             );
                             for (let j = 0; j < item.length; j++) {
-                              let rate =
-                                parseFloat(item[j].cost) *
-                                  (parseInt(profit) / 100) +
-                                parseFloat(item[j].cost);
+                              let rate = parseFloat(item[j].cost) * (parseInt(profit) / 100) + parseFloat(item[j].cost);
                               temp.push({
                                 id: temp.length,
                                 raw: arr[i],
@@ -1147,7 +1054,7 @@ function Transaction() {
                               });
                             }
                           }
-                          setData({ ...data, products: temp });
+                          setData({ ...data, products: temp, });
                         } else {
                           toast.error("Missing Fields", toastFields);
                         }

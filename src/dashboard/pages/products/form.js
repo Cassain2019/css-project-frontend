@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 import $ from "jquery";
 
 export default function Form() {
@@ -33,7 +33,7 @@ export default function Form() {
     description: "",
   });
   const [file, setFile] = new useState({ file: "" });
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
 
   useEffect(() => {
     async function requests() {
@@ -42,44 +42,32 @@ export default function Form() {
       $(".dropify").dropify();
       // CATEGORY
       axios
-        .get(
-          "https://css-project.herokuapp.com/categories/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/categories/company/" + localStorage.getItem("company_id"))
         .then((res) => setCategory(res.data))
         .catch((err) => console.log("Error: " + err));
 
       // SUB CATEGORY
       axios
-        .get(
-          "https://css-project.herokuapp.com/subcategories/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/subcategories/company/" + localStorage.getItem("company_id"))
         .then((res) => setSub(res.data))
         .catch((err) => console.log("Error: " + err));
 
       // UNIT
       axios
-        .get(
-          "https://css-project.herokuapp.com/units/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/units/company/" + localStorage.getItem("company_id"))
         .then((res) => setUnit(res.data))
         .catch((err) => console.log("Error: " + err));
 
       // Tax
       axios
-        .get(
-          "https://css-project.herokuapp.com/taxes/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/taxes/company/" + localStorage.getItem("company_id"))
         .then((res) => setTax(res.data))
         .catch((err) => console.log("Error: " + err));
 
       // PRODUCT
       if (id) {
         axios
-          .get("https://css-project.herokuapp.com/products/" + id)
+          .get("http://localhost:4000/products/" + id)
           .then((res) => {
             setProduct(res.data);
             setprops({
@@ -112,8 +100,9 @@ export default function Form() {
       }
     }
     requests();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const onChange = (e) => {
     setprops({
@@ -134,9 +123,7 @@ export default function Form() {
   };
   const categoryChange = (e) => {
     axios
-      .get(
-        "https://css-project.herokuapp.com/subcategories/category/" + e.value
-      )
+      .get("http://localhost:4000/subcategories/category/" + e.value)
       .then((res) => setSub(res.data))
       .catch((err) => console.log("Error: " + err));
     onChange(e);
@@ -156,9 +143,9 @@ export default function Form() {
       '<i className="fa fa-spinner fa-spin" aria-hidden="true"></i>'
     );
     if (!Object.values(props).every((element) => element !== "") === false) {
-      let url = "https://css-project.herokuapp.com/products/";
+      let url = "http://localhost:4000/products/";
       if (id) {
-        url = "https://css-project.herokuapp.com/products/" + id;
+        url = "http://localhost:4000/products/" + id;
       }
       axios
         .post(url, form, { headers: { "Content-Type": "multipart/form-data" } })
@@ -188,10 +175,7 @@ export default function Form() {
             toast.error("Product Already Exists", toastFields);
           }
         })
-        .catch(() => {
-          toast.dismiss();
-          toast.error("Server Error", toastFields);
-        });
+        .catch(() => { toast.dismiss(); toast.error("Server Error", toastFields) });
     } else {
       toast.dismiss();
       toast.error("Missing Fields", toastFields);
@@ -280,7 +264,7 @@ export default function Form() {
                             if (element._id === props.tax) {
                               return {
                                 value: element._id,
-                                label: `${element.name}  - ${element.percentage}%`,
+                                label: `${element.name}  - ${element.percentage}%`
                               };
                             }
                             return null;

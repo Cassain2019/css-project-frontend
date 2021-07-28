@@ -13,7 +13,7 @@ export default function Page() {
     require("./js/menu");
 
     axios
-      .get("https://css-project.herokuapp.com/companies/")
+      .get("http://localhost:4000/companies/")
       .then((res) => setCompanies(res.data))
       .catch((err) => console.log("Error: " + err));
   }, [setCompanies]);
@@ -21,8 +21,8 @@ export default function Page() {
   const setCookie = (e) => {
     toast.dismiss();
     toast.success(`Welcome Into ${e.name}'s Portal`);
-    localStorage.setItem("company_id", e.target.id);
-    window.location.href = "/";
+    localStorage.setItem('company_id', e.target.id);
+    window.location.href = '/';
   };
   return (
     <>
@@ -62,12 +62,7 @@ export default function Page() {
             <a className="global-menu__item global-menu__item--demo-3" href="/">
               Learning
             </a>
-            <Link
-              className="global-menu__item global-menu__item--demo-3"
-              to="/logout"
-            >
-              Logout
-            </Link>
+            <Link className="global-menu__item global-menu__item--demo-3" to="/logout">Logout</Link>
           </div>
         </div>
         <svg
@@ -101,14 +96,10 @@ export default function Page() {
                               />
                             </p>
                             <h4 className="card-title">{value.name}</h4>
-                            <p className="card-text">{value.address}</p>
-                            <button
-                              className="btn btn-primary"
-                              id={value._id}
-                              onClick={setCookie}
-                            >
-                              Sign In
-                            </button>
+                            <p className="card-text">
+                              {value.address}
+                            </p>
+                            <button className="btn btn-primary" id={value._id} onClick={setCookie}>Sign In</button>
                           </div>
                         </div>
                       </div>

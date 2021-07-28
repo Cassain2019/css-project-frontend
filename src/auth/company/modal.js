@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import $ from "jquery";
 import axios from "axios";
 import Select from "react-select";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';;
 
 export default function Modal() {
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function Modal() {
     currency: "PKR - Rs",
     currSymbol: "Rs",
     dial_code: "+92",
+
   });
   const tabChange = (e) => {
     e.preventDefault();
@@ -54,20 +55,17 @@ export default function Modal() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    toast.loading("Loading...");
+    toast.loading('Loading...');
     await axios
-      .post("https://css-project.herokuapp.com/companies/", data)
+      .post("http://localhost:4000/companies/", data)
       .then((res) => getStarted(res.data))
-      .catch(() => {
-        toast.dismiss();
-        toast.error("Server Error");
-      });
+      .catch(() => { toast.dismiss(); toast.error("Server Error"); });
   };
 
   const getStarted = (data) => {
     toast.dismiss();
     toast.success(`Welcome Into ${data.name}'s Portal`);
-    localStorage.setItem("company_id", data._id);
+    localStorage.setItem('company_id', data._id);
     window.location.href = "/";
   };
 
@@ -167,10 +165,7 @@ export default function Modal() {
                             {
                               value: "Charity & Assossiation",
                               label: "Charity & Assossiation",
-                              target: {
-                                name: "type",
-                                value: "Charity & Assossiation",
-                              },
+                              target: { name: "type", value: "Charity & Assossiation" },
                             },
                             {
                               value: "Traded company or co-operative",

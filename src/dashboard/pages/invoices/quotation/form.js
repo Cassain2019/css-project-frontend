@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 import $ from "jquery";
 
 import ReactTooltip from "react-tooltip";
@@ -14,12 +14,12 @@ function Quotation() {
   let { id } = new useParams();
   let history = useHistory();
   var date = new Date();
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
   const [products, setProduct] = new useState([]);
   const [customers, setCustomer] = new useState([]);
   const [company, setCompany] = new useState({
     currSymbol: "",
-    invoiceTaxes: [],
+    invoiceTaxes: []
   });
   const [value, setValue] = new useState({
     id: "none",
@@ -61,27 +61,21 @@ function Quotation() {
     async function Requests() {
       //COMPANY
       await axios
-        .get(
-          "https://css-project.herokuapp.com/companies/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
         .then((res) => setCompany(res.data))
         .catch((err) => console.log("Error: " + err));
 
       // PRODUCT
       await axios
-        .get(
-          "https://css-project.herokuapp.com/products/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/products/company/" + localStorage.getItem("company_id"))
         .then((res) => setProduct(res.data))
         .catch((err) => console.log("Error: " + err));
 
       //CUSTOMERS
       await axios
         .get(
-          `https://css-project.herokuapp.com/dealers/customer/company/` +
-            localStorage.getItem("company_id")
+          `http://localhost:4000/dealers/customer/company/` +
+          localStorage.getItem("company_id")
         )
         .then((res) => setCustomer(res.data))
         .catch((err) => console.log("Error: " + err));
@@ -89,14 +83,15 @@ function Quotation() {
       if (id) {
         //Quotation DATA
         axios
-          .get(`https://css-project.herokuapp.com/quotations/specific/` + id)
+          .get(`http://localhost:4000/quotations/specific/` + id)
           .then((res) => {
-            if (res.data !== "error") {
+            if (res.data !== 'error') {
               setData(res.data);
               setprop({ customer: res.data.customer._id });
             } else {
               history.push("/404");
             }
+
           })
           .catch((err) => console.log("Error: " + err));
       }
@@ -108,7 +103,7 @@ function Quotation() {
     if (!id) {
       // Invoice
       axios
-        .get("https://css-project.herokuapp.com/quotations/invoice")
+        .get("http://localhost:4000/quotations/invoice")
         .then((res) => invoiceGen(res.data))
         .catch((err) => console.log("Error: " + err));
     }
@@ -133,9 +128,7 @@ function Quotation() {
     });
   }, [data.products, data.transaction, value]);
   useEffect(() => {
-    let tmpDealer = customers.filter(
-      (element) => element._id === prop.customer
-    );
+    let tmpDealer = customers.filter((element) => element._id === prop.customer);
     if (tmpDealer.length > 0) {
       $("#contact").val(tmpDealer[0].phone);
       $("#address").val(tmpDealer[0].address);
@@ -171,10 +164,7 @@ function Quotation() {
     } else {
       //COMPANY
       await axios
-        .get(
-          "https://css-project.herokuapp.com/companies/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
         .then((res) => {
           let year =
             res.data.FormatDetails === true
@@ -269,9 +259,9 @@ function Quotation() {
     $("#btnContent").html(
       '<i className="fa fa-spinner fa-spin" aria-hidden="true"></i>'
     );
-    let url = "https://css-project.herokuapp.com/quotations/";
+    let url = "http://localhost:4000/quotations/";
     if (id) {
-      url = "https://css-project.herokuapp.com/quotations/" + id;
+      url = "http://localhost:4000/quotations/" + id;
     }
     if (!Object.values(data).every((element) => element !== "") === false) {
       let restriction = true;
@@ -284,11 +274,9 @@ function Quotation() {
         axios
           .post(url, data)
           .then((res) => {
+
             if (res.data === "Added" || res.data === "Updated") {
-              toast.success(
-                `${id ? "Updated" : "Created"} Quotation`,
-                toastFields
-              );
+              toast.success(`${id ? "Updated" : "Created"} Quotation`, toastFields);
               if (!id) {
                 setData({
                   comp_id: localStorage.getItem("company_id"),
@@ -311,10 +299,7 @@ function Quotation() {
               toast.error("Invoice No Already Exists", toastFields);
             }
           })
-          .catch((err) => {
-            toast.dismiss();
-            toast.error("Server Error", toastFields);
-          });
+          .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
       } else {
         toast.dismiss();
         toast.error("Missing Fields", toastFields);
@@ -389,10 +374,10 @@ function Quotation() {
                     value={
                       !id
                         ? customers.map((element, index) => {
-                            if (element._id === prop.customer) {
-                              return element.phone;
-                            }
-                          })[0]
+                          if (element._id === prop.customer) {
+                            return element.phone;
+                          }
+                        })[0]
                         : data.customer.phone
                     }
                     className="form-control"
@@ -419,10 +404,10 @@ function Quotation() {
                     value={
                       !id
                         ? customers.map((element, index) => {
-                            if (element._id === prop.customer) {
-                              return element.address;
-                            }
-                          })[0]
+                          if (element._id === prop.customer) {
+                            return element.address;
+                          }
+                        })[0]
                         : data.customer.address
                     }
                     className="form-control"
@@ -483,7 +468,7 @@ function Quotation() {
                           let amount = parseFloat(e.rate) * parseFloat(e.qty);
                           let total =
                             amount *
-                              (parseInt(product[0].tax.percentage) / 100) +
+                            (parseInt(product[0].tax.percentage) / 100) +
                             amount;
                           return (
                             <>
@@ -763,21 +748,15 @@ function Quotation() {
                     <dl className="receipt__list">
                       <div className="receipt__list-row mt-4">
                         <dt className="receipt__item">Sub Total</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.subTotal}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.subTotal}</dd>
                       </div>
                       <div className="receipt__list-row mt-3">
                         <dt className="receipt__item">Total Tax</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.tax}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.tax}</dd>
                       </div>
                       <div className="receipt__list-row receipt__list-row--total mt-3 ">
                         <dt className="receipt__item">Total</dt>
-                        <dd className="receipt__cost">
-                          {company.currSymbol} {totals.total}
-                        </dd>
+                        <dd className="receipt__cost">{company.currSymbol} {totals.total}</dd>
                       </div>
                     </dl>
                   </div>
@@ -869,7 +848,7 @@ function Quotation() {
                             for (let j = 0; j < item.length; j++) {
                               let rate =
                                 parseFloat(item[j].cost) *
-                                  (parseInt(profit) / 100) +
+                                (parseInt(profit) / 100) +
                                 parseFloat(item[j].cost);
                               temp.push({
                                 id: temp.length,

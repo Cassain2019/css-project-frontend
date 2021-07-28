@@ -3,42 +3,31 @@ import axios from "axios";
 
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import toast from "react-hot-toast";
-import { getCountryInfo, getCurrencybyCountryCode } from "get-all-country-info";
+import toast from 'react-hot-toast';
+import { getCountryInfo, getCurrencybyCountryCode } from 'get-all-country-info';
 
 function Details() {
   const [company, setcompany] = new useState([]);
   const [tax, setTax] = new useState([]);
   const [country, setCounty] = new useState([]);
   const countryCallingCodes = require("./countryCallingCode.json");
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
 
   useEffect(() => {
     async function requests() {
       // Tax
       await axios
-        .get(
-          "https://css-project.herokuapp.com/taxes/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/taxes/company/" + localStorage.getItem("company_id"))
         .then((res) => setTax(res.data))
         .catch((err) => console.log("Error: " + err));
 
       await axios
-        .get(
-          "https://css-project.herokuapp.com/companies/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
         .then((res) => setcompany([res.data]))
         .catch((err) => console.log("Error: " + err));
 
       //SETTING COUNTRIES
-      setCounty(
-        getCountryInfo({
-          methodType: ["COUNTRY_NAME", "CURRENCY"],
-          attributes: "",
-        })
-      );
+      setCounty(getCountryInfo({ methodType: ["COUNTRY_NAME", "CURRENCY"], attributes: "" }));
     }
     requests();
   }, []);
@@ -52,23 +41,19 @@ function Details() {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    toast.loading("Loading...");
+    toast.loading("Loading...")
     axios
       .post(
-        "https://css-project.herokuapp.com/companies/" +
-          localStorage.getItem("company_id"),
+        "http://localhost:4000/companies/" + localStorage.getItem("company_id"),
         company[0]
       )
       .then((res) => {
         toast.dismiss();
         res.data === "Updated"
           ? toast.success(`Prefrences Saved`, toastFields)
-          : toast.error("Please Contact Us", toastFields);
+          : toast.error("Please Contact Us", toastFields)
       })
-      .catch((err) => {
-        toast.dismiss();
-        toast.error("Server Error", toastFields);
-      });
+      .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
   };
   return (
     <>
@@ -106,32 +91,23 @@ function Details() {
                     <Select
                       name="country"
                       options={country.map((e, index) => {
-                        return { value: e.country_name, label: e.country_name };
+                        return { value: e.country_name, label: e.country_name }
                       })}
                       onChange={(e) => {
-                        let currency = country.filter(
-                          (arr) => arr.country_name === e.value
-                        )[0].currency;
-                        let dial_code = countryCallingCodes.filter(
-                          (arr) => arr.name === e.value
-                        );
+                        let currency = country.filter((arr) => arr.country_name === e.value)[0].currency;
+                        let dial_code = countryCallingCodes.filter((arr) => arr.name === e.value);
                         let info = getCurrencybyCountryCode(currency);
                         if (info && dial_code.length > 0) {
-                          setcompany([
-                            {
-                              ...company[0],
-                              country: e.value,
-                              currency: currency + " - " + info.symbol_native,
-                              currSymbol: info.symbol_native,
-                              dial_code: dial_code[0].dial_code,
-                            },
-                          ]);
+                          setcompany([{
+                            ...company[0],
+                            country: e.value,
+                            currency: currency + " - " + info.symbol_native,
+                            currSymbol: info.symbol_native,
+                            dial_code: dial_code[0].dial_code
+                          },]);
                         }
                       }}
-                      value={{
-                        value: company[0].country,
-                        label: company[0].country,
-                      }}
+                      value={{ value: company[0].country, label: company[0].country }}
                     />
                   </div>
                   <div className="form-group col-md-4">
@@ -140,8 +116,7 @@ function Details() {
                       className="form-control"
                       name="state"
                       onChange={onChange}
-                      value={company[0].state}
-                    />
+                      value={company[0].state} />
                   </div>
                   <div className="form-group col-md-2">
                     <label>Phone Code</label>
@@ -150,17 +125,14 @@ function Details() {
                       name="dial_code"
                       onChange={onChange}
                       value={company[0].dial_code}
-                      readOnly
-                    />
+                      readOnly />
                   </div>
                   <div className="form-group col-md-6">
                     <label>City</label>
-                    <input
-                      className="form-control"
+                    <input className="form-control"
                       name="city"
                       onChange={onChange}
-                      value={company[0].city}
-                    />
+                      value={company[0].city} />
                   </div>
                   <div className="form-group col-md-3">
                     <label>Zip</label>

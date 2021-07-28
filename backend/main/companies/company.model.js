@@ -90,7 +90,49 @@ var CompanySchema = new mongoose.Schema(
       unique: false,
       default: "",
     },
-    attachment1: {
+    country: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    state: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    city: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    zip: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    currency: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    currSymbol: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    dial_code: {
+      type: String,
+      required: false,
+      unique: false,
+      default: "",
+    },
+    invoiceTaxes: {
       type: Array,
       required: false,
       unique: false,

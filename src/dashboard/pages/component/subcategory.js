@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import Select from "react-select";
+
 
 export default function SubCategory() {
   //states
@@ -11,14 +12,11 @@ export default function SubCategory() {
     category: "",
     subcategory: "",
   });
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
 
   useEffect(() => {
     axios
-      .get(
-        "https://css-project.herokuapp.com/categories/company/" +
-          localStorage.getItem("company_id")
-      )
+      .get("http://localhost:4000/categories/company/" + localStorage.getItem("company_id"))
       .then((res) => setcategory(res.data))
       .catch((err) => console.log("Error: " + err));
   }, [setcategory]);
@@ -32,7 +30,7 @@ export default function SubCategory() {
     e.preventDefault();
     if (!Object.values(data).every((element) => element !== "") === false) {
       axios
-        .post("https://css-project.herokuapp.com/subcategories/", data)
+        .post("http://localhost:4000/subcategories/", data)
         .then((res) => {
           toast.dismiss();
           if (res.data === "Added") {
@@ -45,10 +43,7 @@ export default function SubCategory() {
             toast.error("Sub Category Already Exists", toastFields);
           }
         })
-        .catch(() => {
-          toast.dismiss();
-          toast.error("Server Error", toastFields);
-        });
+        .catch(() => { toast.dismiss(); toast.error("Server Error", toastFields) });
     } else {
       toast.dismiss();
       toast.error("Missing Fields", toastFields);
@@ -56,6 +51,7 @@ export default function SubCategory() {
   };
   return (
     <div className="modal fade" id="subCategory">
+
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -93,11 +89,7 @@ export default function SubCategory() {
             </div>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={onSubmit}
-            >
+            <button type="button" className="btn btn-primary" onClick={onSubmit}>
               Create Sub Category
             </button>
           </div>

@@ -3,15 +3,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import $ from "jquery";
 
+
 export default function View() {
   const [quotations, setquote] = new useState([]);
   useEffect(() => {
     // Quotaion
     axios
-      .get(
-        "https://css-project.herokuapp.com/quotations/company/" +
-          localStorage.getItem("company_id")
-      )
+      .get("http://localhost:4000/quotations/company/" + localStorage.getItem("company_id"))
       .then((res) => setquote(res.data))
       .catch((err) => console.log("Error: " + err));
   }, [setquote]);
@@ -19,9 +17,7 @@ export default function View() {
   const filter = (e) => {
     let value = e.target.value;
     $("#quotations tr").filter(function () {
-      $(this).toggle(
-        $(this).text().toLowerCase().indexOf(value.toLowerCase()) > -1
-      );
+      $(this).toggle($(this).text().toLowerCase().indexOf(value.toLowerCase()) > -1);
       return null;
     });
   };
@@ -87,11 +83,10 @@ export default function View() {
                             <td>{element.invoiceDate}</td>
                             <td>
                               <span
-                                className={`badge light badge-${
-                                  element.status === `In Progress`
-                                    ? `warning`
-                                    : `danger`
-                                }`}
+                                className={`badge light badge-${element.status === `In Progress`
+                                  ? `warning`
+                                  : `danger`
+                                  }`}
                               >
                                 {element.status}
                               </span>

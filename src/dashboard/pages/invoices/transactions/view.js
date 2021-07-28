@@ -5,18 +5,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import $ from "jquery";
 import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function View() {
   let history = useHistory();
   let date = new Date();
   let { type } = new useParams();
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
   const [transactions, setTransactions] = new useState([]);
   const [tax, setTax] = new useState([]);
   const [company, setCompany] = new useState({
     currSymbol: "",
-    invoiceTaxes: [],
+    invoiceTaxes: []
   });
   const [total, setTotal] = new useState({
     amount: 0.0,
@@ -49,28 +49,17 @@ export default function View() {
     async function request() {
       //COMPANY
       await axios
-        .get(
-          "https://css-project.herokuapp.com/companies/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
         .then((res) => setCompany(res.data))
         .catch((err) => console.log("Error: " + err));
       // Transactions
       await axios
-        .get(
-          "https://css-project.herokuapp.com/transactions/company/" +
-            localStorage.getItem("company_id") +
-            "/" +
-            type
-        )
+        .get("http://localhost:4000/transactions/company/" + localStorage.getItem("company_id") + "/" + type)
         .then((res) => setTransactions(res.data))
         .catch((err) => console.log("Error: " + err));
       // Tax
       await axios
-        .get(
-          "https://css-project.herokuapp.com/taxes/company/" +
-            localStorage.getItem("company_id")
-        )
+        .get("http://localhost:4000/taxes/company/" + localStorage.getItem("company_id"))
         .then((res) => setTax(res.data))
         .catch((err) => console.log("Error: " + err));
     }
@@ -89,8 +78,7 @@ export default function View() {
       let receviedSum = invoice[0].recevied.reduce((a, b) => {
         return parseFloat(a) + parseFloat(b);
       }, 0);
-      let value =
-        parseFloat(invoice[0].invtotal) - parseFloat(invoice[0].taxTotal);
+      let value = parseFloat(invoice[0].invtotal) - parseFloat(invoice[0].taxTotal);
       invoicesTotal += value;
       recevied += parseFloat(receviedSum);
     }
@@ -133,23 +121,15 @@ export default function View() {
       tempAmount.push(0);
       let tempDiscount = multiple.discount;
       tempDiscount.push(0);
-      let invoiceDetails = transactions.filter(
-        (arr) => arr._id === e.target.id
-      );
+      let invoiceDetails = transactions.filter((arr) => arr._id === e.target.id);
 
       let tempTax = multiple.receviedTax;
-      let tempTotalTax = multiple.taxes;
+      let tempTotalTax = multiple.taxes
       let value = [];
       for (let i = 0; i < invoiceDetails[0].otherTax.length; i++) {
-        let taxDetails = tax.filter(
-          (arr) => arr._id === invoiceDetails[0].otherTax[i].value
-        );
-        let invTotal =
-          parseFloat(invoiceDetails[0].invtotal) -
-          parseFloat(invoiceDetails[0].taxTotal);
-        value.push(
-          (invTotal * (parseFloat(taxDetails[0].percentage) / 100)).toFixed(2)
-        );
+        let taxDetails = tax.filter((arr) => arr._id === invoiceDetails[0].otherTax[i].value);
+        let invTotal = parseFloat(invoiceDetails[0].invtotal) - parseFloat(invoiceDetails[0].taxTotal);
+        value.push((invTotal * (parseFloat(taxDetails[0].percentage) / 100)).toFixed(2));
         tempTotalTax.push(invoiceDetails[0].otherTax[i]);
       }
       tempTax.push(value);
@@ -207,10 +187,10 @@ export default function View() {
     // Transactions
     axios
       .get(
-        "https://css-project.herokuapp.com/transactions/company/" +
-          localStorage.getItem("company_id") +
-          "/" +
-          type
+        "http://localhost:4000/transactions/company/" +
+        localStorage.getItem("company_id") +
+        "/" +
+        type
       )
       .then((res) => setTransactions(res.data))
       .catch((err) => console.log("Error: " + err));
@@ -244,18 +224,14 @@ export default function View() {
         let recivedAmount = invoice[0].recevied.reduce((a, b) => {
           return parseFloat(a) + parseFloat(b);
         }, 0);
-        let remaining =
-          parseFloat(invoice[0].invtotal) - parseFloat(recivedAmount);
+        let remaining = parseFloat(invoice[0].invtotal) - parseFloat(recivedAmount);
         if (multiple.receviedTax.length > 0) {
           let totalTax = multiple.receviedTax[i].reduce((a, b) => {
             return parseFloat(a) + parseFloat(b);
           }, 0);
           remaining -= totalTax;
         }
-        remaining = (
-          remaining -
-          (parseFloat(multiple.amount[i]) + parseFloat(multiple.discount[i]))
-        ).toFixed(2);
+        remaining = (remaining - (parseFloat(multiple.amount[i]) + parseFloat(multiple.discount[i]))).toFixed(2);
         if (remaining >= 0) {
           // TRANSFORMING DATA
           let paidBy = invoice[0].paidBy;
@@ -293,15 +269,8 @@ export default function View() {
             paymentDate: paymentDate,
           };
           await axios
-            .post(
-              "https://css-project.herokuapp.com/transactions/" +
-                invoice[0]._id,
-              data
-            )
-            .catch((err) => {
-              toast.dismiss();
-              toast.error("Server Error", toastFields);
-            });
+            .post("http://localhost:4000/transactions/" + invoice[0]._id, data)
+            .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
           if (i + 1 === multiple.invoices.length) {
             toast.dismiss();
             toast.success(`Payment Complete`, toastFields);
@@ -410,12 +379,8 @@ export default function View() {
                           ) : (
                             <Link
                               onClick={(e) => {
-                                toast.error(
-                                  "Select invoices to continue",
-                                  toastFields
-                                );
-                              }}
-                            >
+                                toast.error("Select invoices to continue", toastFields);
+                              }}>
                               <i className="fa fa-money"></i>
                             </Link>
                           )}
@@ -427,23 +392,20 @@ export default function View() {
                         return (
                           <tr key={element._id}>
                             <td>
-                              {element.status !== "In Progress" ? (
-                                <div className="custom-control custom-checkbox checkbox-success check-lg">
-                                  <input
-                                    type="checkbox"
-                                    onClick={selection}
-                                    className="custom-control-input onCheck"
-                                    id={element._id}
-                                    dealerId={element.dealer._id}
-                                  />
-                                  <label
-                                    className="custom-control-label"
-                                    for={element._id}
-                                  ></label>
-                                </div>
-                              ) : (
-                                ""
-                              )}
+                              {element.status !== "In Progress" ? (<div className="custom-control custom-checkbox checkbox-success check-lg">
+                                <input
+                                  type="checkbox"
+                                  onClick={selection}
+                                  className="custom-control-input onCheck"
+                                  id={element._id}
+                                  dealerId={element.dealer._id}
+                                />
+                                <label
+                                  className="custom-control-label"
+                                  for={element._id}
+                                ></label>
+                              </div>) : ""}
+
                             </td>
                             <td>
                               <div className="d-flex align-items-center">
@@ -457,11 +419,7 @@ export default function View() {
                             <td>{element.dueDate}</td>
                             <td>
                               <span
-                                className={`badge light badge-${
-                                  element.status === `In Progress`
-                                    ? `warning`
-                                    : `danger`
-                                }`}
+                                className={`badge light badge-${element.status === `In Progress` ? `warning` : `danger`}`}
                               >
                                 {element.status}
                               </span>
@@ -474,24 +432,20 @@ export default function View() {
                                 >
                                   <i className="fa fa-eye"></i>
                                 </Link>
-                                {element.status === "In Progress" ? (
-                                  <>
-                                    <Link
-                                      to={`/${type}/form/${element._id}`}
-                                      className="btn btn-primary shadow btn-xs sharp mr-1"
-                                    >
-                                      <i className="fa fa-pencil"></i>
-                                    </Link>
-                                    <Link
-                                      to="#"
-                                      className="btn btn-danger shadow btn-xs sharp mr-1"
-                                    >
-                                      <i className="fa fa-trash"></i>
-                                    </Link>
-                                  </>
-                                ) : (
-                                  ""
-                                )}
+                                {element.status === "In Progress" ? (<>
+                                  <Link
+                                    to={`/${type}/form/${element._id}`}
+                                    className="btn btn-primary shadow btn-xs sharp mr-1"
+                                  >
+                                    <i className="fa fa-pencil"></i>
+                                  </Link>
+                                  <Link
+                                    to="#"
+                                    className="btn btn-danger shadow btn-xs sharp mr-1"
+                                  >
+                                    <i className="fa fa-trash"></i>
+                                  </Link>
+                                </>) : ""}
                                 {type === "sale" ? (
                                   <Link
                                     to={`/redirect/purchase/${element._id}`}
@@ -521,7 +475,9 @@ export default function View() {
                   >
                     <div className="modal-content">
                       <div className="modal-header">
-                        <h3 className="modal-title text-primary">PAYMENT</h3>
+                        <h3 className="modal-title text-primary">
+                          PAYMENT
+                        </h3>
                         <button
                           type="button"
                           className="close"
@@ -595,16 +551,14 @@ export default function View() {
                                 </thead>
                                 <tbody>
                                   {multiple.invoices.map((e, index) => {
-                                    let data = transactions.filter(
-                                      (arr) => arr._id === e
-                                    );
+                                    let data = transactions.filter((arr) => arr._id === e);
                                     let recivedAmount =
                                       data[0].recevied.length > 0
                                         ? data[0].recevied.reduce((a, b) => {
-                                            return (
-                                              parseFloat(a) + parseFloat(b)
-                                            );
-                                          }, 0)
+                                          return (
+                                            parseFloat(a) + parseFloat(b)
+                                          );
+                                        }, 0)
                                         : 0.0;
                                     let remaining =
                                       parseFloat(data[0].invtotal) -
@@ -625,47 +579,42 @@ export default function View() {
                                     return (
                                       <tr key={data[0].invoiceNo}>
                                         <td>{data[0].invoiceNo}</td>
-                                        <td>
-                                          {data[0].invtotal}{" "}
-                                          {company.currSymbol}
-                                        </td>
-                                        <td>
-                                          {recivedAmount} {company.currSymbol}
-                                        </td>
+                                        <td>{data[0].invtotal} {company.currSymbol}</td>
+                                        <td>{recivedAmount} {company.currSymbol}</td>
                                         <td>
                                           {multiple.receviedTax.length > 0
                                             ? multiple.receviedTax[index].map(
-                                                (element, i) => {
-                                                  return (
-                                                    <>
-                                                      {" "}
-                                                      <input
-                                                        key={index}
-                                                        type="number"
-                                                        onChange={(event) => {
-                                                          let change =
-                                                            multiple.receviedTax;
-                                                          change[index][i] =
-                                                            event.target.value;
-                                                          setMultiple({
-                                                            ...multiple,
-                                                            receviedTax: change,
-                                                          });
-                                                        }}
-                                                        value={element}
-                                                        style={{
-                                                          border: "0",
-                                                          width: "50px",
-                                                          height: "auto",
-                                                          padding: "0",
-                                                          margin: "0",
-                                                        }}
-                                                      />{" "}
-                                                      |
-                                                    </>
-                                                  );
-                                                }
-                                              )
+                                              (element, i) => {
+                                                return (
+                                                  <>
+                                                    {" "}
+                                                    <input
+                                                      key={index}
+                                                      type="number"
+                                                      onChange={(event) => {
+                                                        let change =
+                                                          multiple.receviedTax;
+                                                        change[index][i] =
+                                                          event.target.value;
+                                                        setMultiple({
+                                                          ...multiple,
+                                                          receviedTax: change,
+                                                        });
+                                                      }}
+                                                      value={element}
+                                                      style={{
+                                                        border: "0",
+                                                        width: "50px",
+                                                        height: "auto",
+                                                        padding: "0",
+                                                        margin: "0",
+                                                      }}
+                                                    />{" "}
+                                                    |
+                                                  </>
+                                                );
+                                              }
+                                            )
                                             : ""}
                                         </td>
                                         <td>
@@ -738,10 +687,7 @@ export default function View() {
                               <div className="receipt__list-row mt-4">
                                 <dt className="receipt__item">Sub Total</dt>
                                 <dd className="receipt__cost">
-                                  {company.currSymbol}{" "}
-                                  {(
-                                    total.invoicesTotal - total.recevied
-                                  ).toFixed(2)}
+                                  {company.currSymbol} {(total.invoicesTotal - total.recevied).toFixed(2)}
                                 </dd>
                               </div>
                               <div className="receipt__list-row mt-3">
@@ -753,8 +699,7 @@ export default function View() {
                               <div className="receipt__list-row mt-3">
                                 <dt className="receipt__item">Discount</dt>
                                 <dd className="receipt__cost">
-                                  {company.currSymbol}{" "}
-                                  {total.discount.toFixed(2)}
+                                  {company.currSymbol} {total.discount.toFixed(2)}
                                 </dd>
                               </div>
                               <div className="receipt__list-row receipt__list-row--total mt-3 ">
@@ -762,12 +707,7 @@ export default function View() {
                                   Remaning Amount
                                 </dt>
                                 <dd className="receipt__cost">
-                                  {company.currSymbol}{" "}
-                                  {(
-                                    total.invoicesTotal -
-                                    total.recevied -
-                                    (total.amount + total.discount)
-                                  ).toFixed(2)}
+                                  {company.currSymbol} {((total.invoicesTotal - total.recevied) - (total.amount + total.discount)).toFixed(2)}
                                 </dd>
                               </div>
                             </dl>
@@ -781,19 +721,14 @@ export default function View() {
                           data-dismiss="modal"
                         >
                           Close
-                          <span className="btn-icon-right">
-                            <i className="fa fa-close"></i>
-                          </span>
+                          <span className="btn-icon-right"><i className="fa fa-close"></i></span>
                         </button>
                         <button
                           type="button"
                           className="btn btn-outline-primary"
-                          onClick={multiplePayment}
-                        >
+                          onClick={multiplePayment} >
                           Proceed Payment
-                          <span className="btn-icon-right">
-                            <i className="fa fa-money"></i>
-                          </span>
+                          <span className="btn-icon-right"><i className="fa fa-money"></i></span>
                         </button>
                       </div>
                     </div>

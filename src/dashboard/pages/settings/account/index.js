@@ -2,21 +2,18 @@ import axios from "axios";
 
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import InputMask from "react-input-mask";
-import $ from "jquery";
+import $ from 'jquery';
 
 function Account() {
   const [user, setUser] = new useState({});
   const FormData = require("form-data");
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
 
   useEffect(() => {
     axios
-      .get(
-        "https://css-project.herokuapp.com/users/" +
-          localStorage.getItem("user_id")
-      )
+      .get("http://localhost:4000/users/" + localStorage.getItem("user_id"))
       .then((res) => setUser(res.data))
       .catch((err) => console.log("Error: " + err));
   }, [setUser]);
@@ -30,20 +27,13 @@ function Account() {
   const onSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(
-        "https://css-project.herokuapp.com/users/" +
-          localStorage.getItem("user_id"),
-        user
-      )
+      .post("http://localhost:4000/users/" + localStorage.getItem("user_id"), user)
       .then((res) => {
         res.data === "Updated"
           ? toast.success(`Info Updated`, toastFields)
-          : toast.error("Please Contact Us", toastFields);
+          : toast.error("Please Contact Us", toastFields)
       })
-      .catch((err) => {
-        toast.dismiss();
-        toast.error("Server Error", toastFields);
-      });
+      .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
   };
   return (
     <>
@@ -53,86 +43,50 @@ function Account() {
       <div className="card-body">
         <div className="d-flex flex-row bd-highlight">
           <div className="p-2 bd-highlight">
-            <img
-              src={user.image}
-              className="img-fluid rounded border border-primary"
-              style={{ height: "110px" }}
-              alt="A generic square placeholder with rounded corners in a figure."
-            />
+            <img src={user.image} className="img-fluid rounded border border-primary" style={{ height: '110px' }} alt="A generic square placeholder with rounded corners in a figure." />
           </div>
           <div className="p-2 bd-highlight">
-            <button
-              className="btn btn-outline-primary mt-5"
-              onClick={(e) => {
-                e.preventDefault();
-                $("#image").click();
-              }}
-            >
+            <button className="btn btn-outline-primary mt-5" onClick={(e) => {
+              e.preventDefault();
+              $('#image').click();
+            }}>
               Upload Image
               <span className="btn-icon-right">
                 <i className="fa fa-cloud-upload"></i>
               </span>
             </button>
-            <input
-              type="file"
-              name="image"
-              id="image"
-              onChange={(e) => {
-                var form = new FormData();
-                form.append("file", e.target.files[0]);
-                axios
-                  .post(
-                    "https://css-project.herokuapp.com/userUpload/" +
-                      localStorage.getItem("user_id"),
-                    form,
-                    {
-                      headers: { "Content-Type": "multipart/form-data" },
-                    }
-                  )
-                  .then((res) => {
-                    res.data === "Updated"
-                      ? toast.success(`Image Updated`, toastFields)
-                      : toast.error("Please Contact Us", toastFields);
-                  })
-                  .catch((err) => {
-                    toast.dismiss();
-                    toast.error("Server Error", toastFields);
-                  });
-              }}
-              hidden
-            />
-            <button
-              className="btn btn-outline-danger  ml-1 mt-5"
+            <input type="file" name="image" id="image" onChange={(e) => {
+              var form = new FormData();
+              form.append("file", e.target.files[0]);
+              axios.post("http://localhost:4000/userUpload/" + localStorage.getItem("user_id"), form,
+                {
+                  headers: { "Content-Type": "multipart/form-data" }
+                })
+                .then((res) => {
+                  res.data === "Updated"
+                    ? toast.success(`Image Updated`, toastFields)
+                    : toast.error("Please Contact Us", toastFields)
+                })
+                .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) })
+            }} hidden />
+            <button className="btn btn-outline-danger  ml-1 mt-5"
               onClick={(e) => {
                 e.preventDefault();
-                axios
-                  .post(
-                    "https://css-project.herokuapp.com/users/" +
-                      localStorage.getItem("user_id"),
-                    {
-                      image:
-                        user.gender === "Male"
-                          ? "images/users/man.png"
-                          : "images/users/woman.png",
-                    }
-                  )
+                axios.post("http://localhost:4000/users/" + localStorage.getItem("user_id"),
+                  { image: (user.gender === "Male") ? "images/users/man.png" : "images/users/woman.png" }
+                )
                   .then((res) => {
                     res.data === "Updated"
                       ? toast.success(`Image Removed`, toastFields)
-                      : toast.error("Please Contact Us", toastFields);
+                      : toast.error("Please Contact Us", toastFields)
                   })
-                  .catch((err) => {
-                    toast.dismiss();
-                    toast.error("Server Error", toastFields);
-                  });
-              }}
-            >
+                  .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) })
+              }}>
               Remove Image
               <span className="btn-icon-right">
                 <i className="fa fa-window-restore" aria-hidden="true"></i>
               </span>
-            </button>
-            <br />
+            </button><br />
             <small>Profile image must be: JPEG, PNG, or GIF</small>
           </div>
         </div>

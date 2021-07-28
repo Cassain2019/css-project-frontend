@@ -16,10 +16,7 @@ export default function View() {
   useEffect(() => {
     // PRODUCT
     axios
-      .get(
-        "https://css-project.herokuapp.com/products/company/" +
-          localStorage.getItem("company_id")
-      )
+      .get("http://localhost:4000/products/company/" + localStorage.getItem("company_id"))
       .then((res) => setProduct(res.data))
       .catch((err) => console.log("Error: " + err));
   }, [setProduct]);
@@ -27,9 +24,7 @@ export default function View() {
   const filter = (e) => {
     let value = e.target.value;
     $("#products tr").filter(function () {
-      $(this).toggle(
-        $(this).text().toLowerCase().indexOf(value.toLowerCase()) > -1
-      );
+      $(this).toggle($(this).text().toLowerCase().indexOf(value.toLowerCase()) > -1);
       return null;
     });
   };
@@ -141,9 +136,7 @@ export default function View() {
                                   width="24"
                                   alt=""
                                 />
-                                <span className="w-space-no">
-                                  {element.name}
-                                </span>
+                                <span className="w-space-no">{element.name}</span>
                               </div>
                             </td>
                             <td>

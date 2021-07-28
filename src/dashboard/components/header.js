@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from 'axios';
 
 function Header() {
   const [user, setUser] = new useState({});
@@ -8,10 +8,7 @@ function Header() {
     async function requests() {
       //COMPANY
       await axios
-        .get(
-          "https://css-project.herokuapp.com/users/" +
-            localStorage.getItem("user_id")
-        )
+        .get("http://localhost:4000/users/" + localStorage.getItem("user_id"))
         .then((res) => setUser(res.data))
         .catch((err) => console.log("Error: " + err));
     }
@@ -213,9 +210,7 @@ function Header() {
                     <span>
                       Hey, <strong>{user.firstName}</strong>
                     </span>
-                    <small style={{ textTransform: "capitalize" }}>
-                      {user.type}
-                    </small>
+                    <small style={{textTransform: 'capitalize'}}>{user.type}</small>
                   </div>
                 </Link>
                 <div className="dropdown-menu dropdown-menu-right">

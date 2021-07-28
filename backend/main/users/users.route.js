@@ -34,7 +34,7 @@ router.route("/:id").post(bodyParser, (req, res) => {
 
 // DELETE REQUESTS
 router.route("/:id").delete(bodyParser, (req, res) => {
-  Test.findByIdAndDelete(req.params.id)
+  User.findByIdAndDelete(req.params.id)
     .then(() => res.json("Deleted"))
     .catch(err => res.status(400).json("Invalid ID: ", err));
 });

@@ -3,7 +3,9 @@ const router = require("express").Router();
 const multiparty = require("connect-multiparty");
 const fs = require("fs");
 let Products = require("./products.model");
-let multipartyMiddleware = multiparty();
+let multipartyMiddleware = multiparty({
+  uploadDir: './public/images/product/'
+});
 
 // GET REQUESTS
 router.route("/company/:id").get((req, res) => {
@@ -57,11 +59,8 @@ router.route("/").post(multipartyMiddleware, (req, res) => {
       if (err) throw err;
       fs.unlink(tmp_path, function () {
         if (err) throw err;
-
         Products.findByIdAndUpdate(data._id, {
-          image: `images/product/${data._id}.${
-            req.files.file.path.split(".")[1]
-          }`,
+          image: `images/product/${data._id}.${req.files.file.path.split(".")[1]}`,
         })
           .then(() => res.json("Added"))
           .catch((err) => res.status(400).json("Invalid Id: ", err));

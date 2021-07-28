@@ -3,20 +3,17 @@ import axios from "axios";
 
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 import InputMask from "react-input-mask";
 import ReactTooltip from "react-tooltip";
 import $ from "jquery";
 
 function Company() {
   const [company, setcompany] = new useState([{ logo: "" }]);
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
   useEffect(() => {
     axios
-      .get(
-        "https://css-project.herokuapp.com/companies/" +
-          localStorage.getItem("company_id")
-      )
+      .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
       .then((res) => setcompany([res.data]))
       .catch((err) => console.log("Error: " + err));
   }, []);
@@ -30,21 +27,13 @@ function Company() {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post(
-        "https://css-project.herokuapp.com/companies/" +
-          localStorage.getItem("company_id"),
-        company[0]
-      )
+    axios.post("http://localhost:4000/companies/" + localStorage.getItem("company_id"), company[0])
       .then((res) => {
         res.data === "Updated"
           ? toast.success(`Company Info Updated`, toastFields)
-          : toast.error("Please Contact Us", toastFields);
+          : toast.error("Please Contact Us", toastFields)
       })
-      .catch((err) => {
-        toast.dismiss();
-        toast.error("Server Error", toastFields);
-      });
+      .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
   };
   return (
     <>
@@ -54,88 +43,54 @@ function Company() {
       <div className="card-body">
         <div className="d-flex flex-row bd-highlight">
           <div className="p-2 bd-highlight">
-            <img
-              src={company[0].logo}
-              className="img-fluid rounded border"
-              style={{ height: "110px" }}
-              alt="A generic square placeholder with rounded corners in a figure."
-            />
+            <img src={company[0].logo} className="img-fluid rounded border" style={{ height: '110px' }} alt="A generic square placeholder with rounded corners in a figure." />
           </div>
           <div className="p-2 bd-highlight">
-            <button
-              className="btn btn-outline-primary mt-5"
-              onClick={(e) => {
-                e.preventDefault();
-                $("#logo").click();
-              }}
-            >
+            <button className="btn btn-outline-primary mt-5" onClick={(e) => {
+              e.preventDefault();
+              $('#logo').click();
+            }}>
               Upload Image
               <span className="btn-icon-right">
                 <i className="fa fa-cloud-upload"></i>
               </span>
             </button>
-            <input
-              type="file"
-              name="logo"
-              id="logo"
-              onChange={(e) => {
-                var form = new FormData();
-                form.append("file", e.target.files[0]);
-                axios
-                  .post(
-                    "https://css-project.herokuapp.com/compUpload/" +
-                      localStorage.getItem("company_id"),
-                    form,
-                    {
-                      headers: { "Content-Type": "multipart/form-data" },
-                    }
-                  )
-                  .then((res) => {
-                    res.data === "Updated"
-                      ? toast.success(`Image Updated`, toastFields)
-                      : toast.error("Please Contact Us", toastFields);
-                  })
-                  .catch((err) => {
-                    toast.dismiss();
-                    toast.error("Server Error", toastFields);
-                  });
-              }}
-              hidden
-            />
-            <button
-              className="btn btn-outline-danger  ml-1 mt-5"
+            <input type="file" name="logo" id="logo" onChange={(e) => {
+              var form = new FormData();
+              form.append("file", e.target.files[0]);
+              axios.post("http://localhost:4000/compUpload/" + localStorage.getItem("company_id"), form,
+                {
+                  headers: { "Content-Type": "multipart/form-data" }
+                })
+                .then((res) => {
+                  res.data === "Updated"
+                    ? toast.success(`Image Updated`, toastFields)
+                    : toast.error("Please Contact Us", toastFields)
+                })
+                .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) })
+            }} hidden />
+            <button className="btn btn-outline-danger  ml-1 mt-5"
               onClick={(e) => {
                 e.preventDefault();
-                axios
-                  .post(
-                    "https://css-project.herokuapp.com/companies/" +
-                      localStorage.getItem("company_id"),
-                    { logo: "images/companies/company.png" }
-                  )
+                axios.post("http://localhost:4000/companies/" + localStorage.getItem("company_id"),
+                  { logo: "images/companies/company.png" }
+                )
                   .then((res) => {
                     res.data === "Updated"
                       ? toast.success(`Image Removed`, toastFields)
-                      : toast.error("Please Contact Us", toastFields);
+                      : toast.error("Please Contact Us", toastFields)
                     axios
-                      .get(
-                        "https://css-project.herokuapp.com/companies/" +
-                          localStorage.getItem("company_id")
-                      )
+                      .get("http://localhost:4000/companies/" + localStorage.getItem("company_id"))
                       .then((res) => setcompany([res.data]))
                       .catch((err) => console.log("Error: " + err));
                   })
-                  .catch((err) => {
-                    toast.dismiss();
-                    toast.error("Server Error", toastFields);
-                  });
-              }}
-            >
+                  .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) })
+              }}>
               Remove Image
               <span className="btn-icon-right">
                 <i className="fa fa-window-restore" aria-hidden="true"></i>
               </span>
-            </button>
-            <br />
+            </button><br />
             <small>Profile image must be: JPEG, PNG, or GIF</small>
           </div>
         </div>
@@ -260,8 +215,9 @@ function Company() {
                               setcompany([
                                 {
                                   ...company[0],
-                                  [e.target.name]:
-                                    $("#FormatDetails").is(":checked"),
+                                  [e.target.name]: $("#FormatDetails").is(
+                                    ":checked"
+                                  ),
                                 },
                               ]);
                               $("#FormatDetails").is(":checked")
@@ -280,9 +236,7 @@ function Company() {
                         className="form-control"
                       />
                       <div className="input-group-append">
-                        <span className="input-group-text invoiceFormat">
-                          1
-                        </span>
+                        <span className="input-group-text invoiceFormat">1</span>
                       </div>
                     </div>
                   </div>

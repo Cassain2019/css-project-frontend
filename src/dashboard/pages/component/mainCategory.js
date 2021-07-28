@@ -1,13 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
+
 
 function Category() {
   const [data, setData] = new useState({
     company: [localStorage.getItem("company_id")],
     category: "",
   });
-  const toastFields = { duration: 5000, position: "top-center" };
+  const toastFields = { duration: 5000, position: 'top-center' };
   const onChange = (e) => {
     setData({
       ...data,
@@ -18,14 +19,11 @@ function Category() {
     e.preventDefault();
     if (!Object.values(data).every((element) => element !== "") === false) {
       axios
-        .post("https://css-project.herokuapp.com/categories/", data)
+        .post("http://localhost:4000/categories/", data)
         .then((res) => {
           if (res.data === "Added") {
             toast.success("Category Created", toastFields);
-            setData({
-              company: [localStorage.getItem("company_id")],
-              maincat: "",
-            });
+            setData({ company: [localStorage.getItem("company_id")], maincat: "", });
           } else {
             toast.error("Category Already Exists", toastFields);
           }
@@ -37,6 +35,7 @@ function Category() {
   };
   return (
     <div className="modal fade" id="mainCategory">
+
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -61,11 +60,7 @@ function Category() {
             </div>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={onSubmit}
-            >
+            <button type="button" className="btn btn-primary" onClick={onSubmit}>
               Create Category
             </button>
           </div>

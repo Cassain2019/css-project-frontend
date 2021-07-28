@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Background from "./images/bg-01.jpg";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
+;
+
 export default function Login() {
   const [data, setData] = useState({
     email: "",
@@ -21,8 +23,8 @@ export default function Login() {
 
   const setCookie = (userData) => {
     toast.dismiss();
-    localStorage.setItem("user_id", userData[0]._id);
-    localStorage.setItem("user_type", userData[0].type);
+    localStorage.setItem('user_id', userData[0]._id);
+    localStorage.setItem('user_type', userData[0].type);
     window.location.href = "/selection";
   };
   const exceptions = () => {
@@ -41,19 +43,18 @@ export default function Login() {
     document
       .getElementById("LoginBackground")
       .classList.add("wrap-login100-error");
-    document.getElementById("icon").innerHTML =
-      '<i class="zmdi zmdi-alert-circle"></i>';
+    document.getElementById("icon").innerHTML = '<i class="zmdi zmdi-alert-circle"></i>';
   };
   const onSubmit = async (e) => {
     e.preventDefault();
-    toast.loading("Loading...");
+    toast.loading('Loading...');
     document
       .getElementsByClassName("animebtn")[0]
       .setAttribute("disabled", "disabled");
     document.getElementById("submitBtn").innerHTML =
       '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>';
     await axios
-      .post("https://css-project.herokuapp.com/login/", data)
+      .post("http://localhost:4000/login/", data)
       .then((res) =>
         res.data === "Invalid" || res.data === "error"
           ? exceptions()

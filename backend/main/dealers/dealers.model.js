@@ -63,6 +63,12 @@ var DealerSchema = new mongoose.Schema(
       unique: false,
       default: "",
     },
+    creditTerms: {
+      type: String,
+      required: true,
+      unique: false,
+      default: "",
+    },
   },
   {
     timestamps: true,

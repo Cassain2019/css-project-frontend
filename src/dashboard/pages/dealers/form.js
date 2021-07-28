@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router";
 import Select from "react-select";
-import toast, { Toaster } from "react-hot-toast";
+import toast, { Toaster } from 'react-hot-toast';
 import $ from "jquery";
 import InputMask from "react-input-mask";
 
@@ -28,20 +28,18 @@ export default function Dealers() {
     address: "",
     creditTerms: "",
   });
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
+
 
   useEffect(() => {
     if (id) {
       axios
-        .get(`https://css-project.herokuapp.com/dealers/specific/` + id)
+        .get(`http://localhost:4000/dealers/specific/` + id)
         .then((res) => setData(res.data))
         .catch((err) => console.log("Error: " + err));
     }
     axios
-      .get(
-        "https://css-project.herokuapp.com/categories/company/" +
-          localStorage.getItem("company_id")
-      )
+      .get("http://localhost:4000/categories/company/" + localStorage.getItem("company_id"))
       .then((res) => setmainCats(res.data))
       .catch((err) => console.log("Error: " + err));
   }, []);
@@ -57,14 +55,10 @@ export default function Dealers() {
     toast.loading("Loading...");
 
     $(".animeBtn").attr("disabled", "disabled");
-    $("#btnContent").html(
-      '<i className="fa fa-spinner fa-spin" aria-hidden="true"></i>'
-    );
+    $("#btnContent").html('<i className="fa fa-spinner fa-spin" aria-hidden="true"></i>');
     if (!Object.values(data).every((element) => element !== "") === false) {
-      let url = "https://css-project.herokuapp.com/dealers/";
-      if (id) {
-        url = "https://css-project.herokuapp.com/dealers/" + id;
-      }
+      let url = "http://localhost:4000/dealers/";
+      if (id) { url = "http://localhost:4000/dealers/" + id; }
       axios
         .post(url, data)
         .then((res) => {
@@ -72,12 +66,7 @@ export default function Dealers() {
           if (res.data === "Added" || res.data === "Updated") {
             toast.success(`${id ? "Updated" : "Created"} Dealer`, toastFields);
             $(".animeBtn").removeAttr("disabled");
-            $("#btnContent").html(
-              `${id ? "Update" : "Create"} ${location.pathname
-                .replace("/form", "")
-                .replace(`/${id}`, "")
-                .replace("/", "")}`
-            );
+            $("#btnContent").html(`${id ? "Update" : "Create"} ${location.pathname.replace("/form", "").replace(`/${id}`, "").replace("/", "")}`);
             if (!id) {
               setData({
                 company: [localStorage.getItem("company_id")],
@@ -99,10 +88,7 @@ export default function Dealers() {
             toast.error("Dealer Already Exists", toastFields);
           }
         })
-        .catch((err) => {
-          toast.dismiss();
-          toast.error("Server Error", toastFields);
-        });
+        .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
     } else {
       toast.dismiss();
       toast.error("Missing Fields", toastFields);
@@ -117,10 +103,7 @@ export default function Dealers() {
             <div className="card">
               <div className="card-header">
                 <h4>
-                  {location.pathname
-                    .replace("/form", "")
-                    .replace(`/${id}`, "")
-                    .replace("/", "")}{" "}
+                  {location.pathname.replace("/form", "").replace(`/${id}`, "").replace("/", "")}{" "}
                   From
                 </h4>
               </div>
@@ -130,10 +113,7 @@ export default function Dealers() {
                     <div className="form-row">
                       <div className="form-group col-md-12">
                         <label>
-                          {location.pathname
-                            .replace("/form", "")
-                            .replace(`/${id}`, "")
-                            .replace("/", "")}{" "}
+                          {location.pathname.replace("/form", "").replace(`/${id}`, "").replace("/", "")}{" "}
                           Name
                         </label>
                         <input
@@ -162,48 +142,29 @@ export default function Dealers() {
                             {
                               value: "7 Days Terms",
                               label: "7 Days Terms",
-                              target: {
-                                value: "7 Days Term",
-                                name: "creditTerms",
-                              },
-                            },
-                            {
+                              target: { value: "7 Days Term", name: "creditTerms" }
+                            }, {
                               value: "15 Days Terms",
                               label: "15 Days Terms",
-                              target: {
-                                value: "15 Days Terms",
-                                name: "creditTerms",
-                              },
+                              target: { value: "15 Days Terms", name: "creditTerms" }
                             },
                             {
                               value: "30 Days Terms",
                               label: "30 Days Terms",
-                              target: {
-                                value: "30 Days Terms",
-                                name: "creditTerms",
-                              },
+                              target: { value: "30 Days Terms", name: "creditTerms" }
                             },
                             {
                               value: "60 Days Terms",
                               label: "60 Days Terms",
-                              target: {
-                                value: "60 Days Terms",
-                                name: "creditTerms",
-                              },
+                              target: { value: "60 Days Terms", name: "creditTerms" }
                             },
                             {
                               value: "90 Days Terms",
                               label: "90 Days Terms",
-                              target: {
-                                value: "90 Days Terms",
-                                name: "creditTerms",
-                              },
-                            },
+                              target: { value: "90 Days Terms", name: "creditTerms" }
+                            }
                           ]}
-                          value={{
-                            value: data.creditTerms,
-                            label: data.creditTerms,
-                          }}
+                          value={{ value: data.creditTerms, label: data.creditTerms }}
                           name="creditTerms"
                         />
                       </div>

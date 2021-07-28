@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
+
 
 function Tax() {
   const [data, setData] = new useState({
@@ -9,7 +10,7 @@ function Tax() {
     percentage: "",
     details: "",
   });
-  const toastFields = { duration: 4000, position: "top-center" };
+  const toastFields = { duration: 4000, position: 'top-center' };
   const onChange = (e) => {
     setData({
       ...data,
@@ -20,7 +21,7 @@ function Tax() {
     e.preventDefault();
     if (!Object.values(data).every((element) => element !== "") === false) {
       axios
-        .post("https://css-project.herokuapp.com/taxes/", data)
+        .post("http://localhost:4000/taxes/", data)
         .then((res) => {
           toast.dismiss();
           if (res.data === "Added") {
@@ -35,10 +36,7 @@ function Tax() {
             toast.error("Tax Already Exists", toastFields);
           }
         })
-        .catch((err) => {
-          toast.dismiss();
-          toast.error("Server Error", toastFields);
-        });
+        .catch((err) => { toast.dismiss(); toast.error("Server Error", toastFields) });
     } else {
       toast.dismiss();
       toast.error("Missing Fields", toastFields);
@@ -94,11 +92,7 @@ function Tax() {
             </div>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={onSubmit}
-            >
+            <button type="button" className="btn btn-primary" onClick={onSubmit}>
               Create Tax
             </button>
           </div>
